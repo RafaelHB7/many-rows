@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>OGWC</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script> <!--HTMX-->
+    <style>
+        table {
+            border: 1px solid #CCC;
+        }
+        tr:nth-child(even) {
+            background-color: #EEE;
+        }
+        button {
+            padding: 4px;
+        }
+        div {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+        }
+        tbody tr:hover {
+            background-color: #DDD;
+        }
+        #rowTemperature td:nth-child(even) {
+            background-color: #EEE;
+        }
+    </style>
+</head>
+<body>
+<!--    <button hx-get="/startDatabase" hx-target="#tableRandomize">Randomize Database</button>-->
+    <div>
+        <button hx-get="/selectDatabase" hx-target="#tableSelect">Select Database</button>
+        <button hx-get="/processRows" hx-target="#result">Process Rows</button>
+        <span id="rowTemperature"></span>
+    </div>
+    <div>
+<!--        <span id="tableRandomize"></span>-->
+        <span id="tableSelect"></span>
+        <span id="result"></span>
+    </div>
+</body>
+</html>
