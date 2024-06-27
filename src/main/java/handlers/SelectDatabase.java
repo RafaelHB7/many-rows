@@ -1,5 +1,11 @@
 package handlers;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import data.CityCount;
@@ -7,6 +13,7 @@ import main.Utils;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class SelectDatabase implements HttpHandler {
@@ -20,7 +27,7 @@ public class SelectDatabase implements HttpHandler {
         }
     }
 
-    private String selectRows() {
+    private String selectRows() throws IOException {
         String sql = """
                 select count(rows.city) as count
                 , rows.city
@@ -38,23 +45,9 @@ public class SelectDatabase implements HttpHandler {
                 .mapToBean(CityCount.class)
                 .list());
 
-        StringBuilder rows = new StringBuilder();
-        rows.append("""
-                <table>
-                    <thead>
-                        <tr>
-                            <th>City</th>
-                            <th>Temperatures</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """);
-        cities.forEach(city -> rows.append(STR."<tr hx-get='/getTemperatures' hx-trigger='mouseenter' hx-target='#rowTemperature' hx-vars='city:\"\{city.getCity()}\"'><td>\{city.getCity()}</td><td>Amount: \{city.getCount()}</td></tr>"));
-        rows.append("""
-                    </tbody>
-                </table>
-                """);
+        Handlebars handlebars = Utils.handleBars();
+        Template template = handlebars.compile("rowsTable");
 
-        return rows.toString();
+        return template.apply(cities);
     }
 }

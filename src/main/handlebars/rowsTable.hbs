@@ -1,0 +1,16 @@
+<table>
+    <thead>
+    <tr>
+        <th>City</th>
+        <th>Temperatures</th>
+    </tr>
+    </thead>
+    <tbody>
+        {{#each this}}
+            <tr hx-get='/getTemperatures' hx-trigger='mouseenter throttle:1s' hx-target='#rowTemperature' hx-vars='city:"{{city}}"'>
+                <td>{{city}}</td>
+                <td>Amount: {{count}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

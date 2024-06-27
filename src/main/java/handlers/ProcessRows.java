@@ -63,7 +63,7 @@ public class ProcessRows implements HttpHandler {
         Collections.sort(citiesData);
         for (String cityData : citiesData) {
             result.append(STR."""
-                        <tr hx-get='/getTemperatures' hx-trigger='mouseenter' hx-target='#rowTemperature' hx-vars='city:\"\{cityData}\"'>
+                        <tr hx-get='/getTemperatures' hx-trigger='mouseenter throttle:1s' hx-target='#rowTemperature' hx-vars='city:"\{cityData}"'>
                             <td>\{cityData}
                             <td>\{data.get(cityData).min}
                             <td>\{data.get(cityData).max}

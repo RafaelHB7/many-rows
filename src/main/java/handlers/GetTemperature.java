@@ -1,8 +1,12 @@
 package handlers;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import data.CityCount;
+import data.CityTemperatures;
 import main.Utils;
 import org.jdbi.v3.core.Jdbi;
 
@@ -21,7 +25,7 @@ public class GetTemperature implements HttpHandler {
         }
     }
 
-    private String getTemperature(HttpExchange h) {
+    private String getTemperature(HttpExchange h) throws IOException {
         String sql = """
                 select rows.temperature
                 from rows
@@ -39,19 +43,11 @@ public class GetTemperature implements HttpHandler {
                     .mapTo(Float.class)
                     .list());
 
-        StringBuilder result = new StringBuilder();
-        result.append(STR."""
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>\{request.get("city")}: </td>
-                """);
-        temperatures.forEach(temperature -> result.append(STR."<td>\{temperature}</td>"));
-        result.append("""
-                        </tr>
-                    </tbody>
-                </table>
-                """);
-        return result.toString();
+        CityTemperatures cityTemperatures = new CityTemperatures(request.get("city"), temperatures);
+
+        Handlebars handlebars = Utils.handleBars();
+        Template template = handlebars.compile("temperatureList");
+
+        return template.apply(cityTemperatures);
     }
 }
